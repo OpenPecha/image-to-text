@@ -17,6 +17,17 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
+dependencies = [
+  "pillow>=10.1.0",
+  "RDFlib>=7.0.0",
+  "GitPython>=3.1.37",
+  "requests>=2.31.0",
+  "botocore>=1.33.2",
+  "boto3>=1.33.2",
+  "jsonlines>=4.0.0",
+]
+
+
 [project.optional-dependencies]
 dev = [
     "pytest",
