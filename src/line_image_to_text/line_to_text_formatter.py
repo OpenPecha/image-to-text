@@ -1,6 +1,7 @@
 from pathlib import Path
 import jsonlines
-from line_image_to_text.config import MONLAM_AI_OCR_BUCKET, monlam_ai_ocr_s3_client
+import csv
+from config import MONLAM_AI_OCR_BUCKET, monlam_ai_ocr_s3_client
 
 s3_client = monlam_ai_ocr_s3_client
 bucket_name = MONLAM_AI_OCR_BUCKET
@@ -34,15 +35,16 @@ def get_new_url(image_url):
 
 
 def create_csv(batch_name, image_paths, csv_path):
-    final_jsonl = []
     for image_path in list(image_paths.iterdir()):
         image_id = image_path.stem
         image_name = image_path.name
         image_key = f"line_to_text/{batch_name}/{image_name}"
         image_url = get_new_url(image_key)
         text = ""
-        final_jsonl.append(image_id,image_url,text)
-    write_csv(final_jsonl, csv_path)
+        line = [image_id,image_url,text]
+        with open(csv_path,'a') as f:
+            writer = csv.writer(f)
+            writer.writerow(line)
 
 def make_line_to_text_jsonl(batch_names):
     for batch_name in batch_names:
@@ -54,12 +56,12 @@ def make_line_to_text_csv(batch_names):
     for batch_name in batch_names:
         image_paths = Path(f"data/images/{batch_name}/")
         csv_path = Path(f"data/csv/{batch_name}.csv")
-        create_csv(image_paths, csv_path)
+        create_csv(batch_name, image_paths, csv_path)
 
 
 def main():
-    format = "jsonl"
-    batch_names = ["batch19","batch20"]
+    format = "csv"
+    batch_names = ["batch21"]
     if format == "jsonl":
         make_line_to_text_jsonl(batch_names)
     else:

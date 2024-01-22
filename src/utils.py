@@ -1,5 +1,5 @@
 from pathlib import Path
-from line_image_to_text.config import MONLAM_AI_OCR_BUCKET, monlam_ai_ocr_s3_client
+from config import MONLAM_AI_OCR_BUCKET, monlam_ai_ocr_s3_client
 
 
 def list_obj_keys(prefix, s3_client, bucket_name):
@@ -28,15 +28,25 @@ def get_image_name(prefix):
     return image_names
 
 
-def main():
+def list_images(batch_name):
     s3_keys = ""
-    prefix = "line_to_text/batch20/"
+    prefix = f"line_to_text/{batch_name}"
     image_names = get_image_name(prefix)
     for image_name in image_names:
         s3_keys += image_name + "\n"
-    Path("./batch19.txt").write_text(s3_keys)
 
 
-if __name__ == "__main__":
-    main()
+def write_names(batch_name, image_names):
+    s3_keys = ""
+    for image_name in image_names:
+        s3_keys += image_name + "\n"
+    Path(f"./{batch_name}.txt").write_text(s3_keys)
+
+
+def is_archived(s3_key, s3_client, Bucket):
+    try:
+        s3_client.head_object(Bucket=Bucket, Key=s3_key)
+    except:
+        return False
+    return True
   
