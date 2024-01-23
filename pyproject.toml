@@ -26,6 +26,7 @@ dependencies = [
   "boto3>=1.33.2",
   "jsonlines>=4.0.0",
   "pyewts>=0.2.0",
+  "botok>=0.8.12"
 ]
 
 
