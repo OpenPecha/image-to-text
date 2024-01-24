@@ -1,6 +1,10 @@
 import json
 import os
 
+from botok import WordTokenizer
+
+wt = WordTokenizer()
+
 
 def load_json_data(json_path):
     """Load JSON data from the given file path."""
@@ -15,22 +19,27 @@ def find_common_images(image_folder, json_data):
     return json_images.intersection(folder_images)
 
 
-def is_valid_image(image_path):
+def is_width_greater_than_height(crop_coords):
+    """Check if the width of the area defined by crop_coords is greater than its height."""
+    left, upper, right, lower = crop_coords
+    width = right - left
+    height = lower - upper
+    return width > height
+
+
+def non_word_exist(tokens):
     pass
 
 
-def non_word_exist(text):
-    pass
-
-
-def non_bo_word_exist(text):
+def non_bo_word_exist(tokens):
     pass
 
 
 def filter_data(image_folder, json_data):
-    """Filter images based on dimensions, digit presence in text, and text length."""
     valid_pairs = []
+    invalid_pairs = []
     common_images = find_common_images(image_folder, json_data)
+    print("common files count", len(common_images))
 
     for entry in json_data:
         image_name = entry["image_name"]
@@ -38,25 +47,64 @@ def filter_data(image_folder, json_data):
             continue
 
         image_path = os.path.join(image_folder, image_name)
-        # Apply filters
-        if (
-            is_valid_image(image_path)
-            and not entry["has_digit_in_text"]
-            and len(entry["text"]) > 6
-        ):
-            if not non_word_exist(entry["text"]) and not non_bo_word_exist(
-                entry["text"]
+        try:
+            tokens = wt.tokenize(entry["text"])
+
+            # Apply filters
+            if (
+                os.path.exists(image_path)
+                and is_width_greater_than_height(entry["pil_crop_rectangle_coords"])
+                and not entry["has_digit_in_text"]
+                and len(entry["text"]) > 5
+                and not non_word_exist(tokens)
+                and not non_bo_word_exist(tokens)
             ):
-                valid_pairs.append((image_path, entry["text"]))
+                valid_pairs.append(image_name)
+            else:
+                invalid_pairs.append(image_name)
 
-    return valid_pairs
+        except IndexError:
+            print(f"IndexError processing text for image {image_name}. Skipping.")
+            invalid_pairs.append(image_name)
+        except AttributeError:
+            print(f"AttributeError processing text for image {image_name}. Skipping.")
+            invalid_pairs.append(image_name)
+        except Exception as error:
+            print(
+                f"Unhandled error processing text for image {image_name}: {error}. Skipping."
+            )
+            invalid_pairs.append(image_name)
+
+    return valid_pairs, invalid_pairs
 
 
-# Example usage
-image_folder = "/path/to/image/folder"
-json_path = "/path/to/json/file.json"
+def write_pairs_to_json(valid_pairs, invalid_pairs, filename):
+    """Write the valid and invalid pairs to a JSON file."""
+    data = {"valid_images": valid_pairs, "invalid_images": invalid_pairs}
+    with open(filename, "w", encoding="utf-8") as file:
+        json.dump(data, file, indent=4)
 
-json_data = load_json_data(json_path)
-filtered_data = filter_data(image_folder, json_data)
 
-# Process filtered_data as needed
+if __name__ == "__main__":
+    super_folder = "/home/gangagyatso/Desktop/project15"
+    json_path = "/home/gangagyatso/Desktop/project15/image_coordinates_and_text.json"
+    json_data = load_json_data(json_path)
+    all_valid_filtered_data = []
+    all_invalid_filtered_data = []
+    output_filename = "/home/gangagyatso/Desktop/project15/valid_and_invalid_image.json"
+
+    # Process each subfolder within the super folder
+    for folder_name in os.listdir(super_folder):
+        subfolder_path = os.path.join(super_folder, folder_name)
+        if os.path.isdir(subfolder_path):
+            valid_images, invalid_images = filter_data(subfolder_path, json_data)
+            all_valid_filtered_data.extend(valid_images)
+            all_invalid_filtered_data.extend(invalid_images)
+
+    write_pairs_to_json(
+        all_valid_filtered_data, all_invalid_filtered_data, output_filename
+    )
+
+    print("Valid images:", len(all_valid_filtered_data))
+    print("Invalid images:", len(all_invalid_filtered_data))
+    # Process all_filtered_data as needed
