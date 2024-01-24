@@ -41,7 +41,12 @@ def non_word_exist(tokens):
 
 
 def non_bo_word_exist(tokens):
-    pass
+    for token in tokens:
+        if token.chunk_type in ["LATIN", "CJK", "OTHER"] and (
+            token.chunk_type != "OTHER" or not token.skrt
+        ):
+            return True
+    return False
 
 
 def filter_data(image_folder, json_data):
