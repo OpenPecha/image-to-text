@@ -54,7 +54,9 @@ def filter_data(image_folder, json_data):
             if (
                 os.path.exists(image_path)
                 and is_width_greater_than_height(entry["pil_crop_rectangle_coords"])
-                and not entry["has_digit_in_text"]
+                and not entry[
+                    "has_digit_in_text"
+                ]  # gets the boolean value from the json file
                 and len(entry["text"]) > 5
                 and not non_word_exist(tokens)
                 and not non_bo_word_exist(tokens)
