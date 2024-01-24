@@ -27,6 +27,12 @@ def is_width_greater_than_height(crop_coords):
     return width > height
 
 
+def is_valid_text_len(text):
+    if len(text) > 5:
+        return True
+    return False
+
+
 def non_word_exist(tokens):
     pass
 
@@ -57,7 +63,7 @@ def filter_data(image_folder, json_data):
                 and not entry[
                     "has_digit_in_text"
                 ]  # gets the boolean value from the json file
-                and len(entry["text"]) > 5
+                and is_valid_text_len(entry["text"])
                 and not non_word_exist(tokens)
                 and not non_bo_word_exist(tokens)
             ):
