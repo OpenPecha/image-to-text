@@ -34,7 +34,10 @@ def is_valid_text_len(text):
 
 
 def non_word_exist(tokens):
-    pass
+    for token in tokens:
+        if token.pos == "NON_WORD":
+            return True
+    return False
 
 
 def non_bo_word_exist(tokens):
