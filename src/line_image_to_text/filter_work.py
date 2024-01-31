@@ -13,13 +13,6 @@ def load_json_data(json_path):
         return json.load(file)
 
 
-def find_common_images(image_folder, json_data):
-    """Find common images in both the folder and the JSON data."""
-    json_images = {item["image_name"] for item in json_data}
-    folder_images = set(os.listdir(image_folder))
-    return json_images.intersection(folder_images)
-
-
 def is_width_greater_than_height(crop_coords):
     """Check if the width of the area defined by crop_coords is greater than its height."""
     left, upper, right, lower = crop_coords
@@ -66,13 +59,13 @@ def filter_data(image_folder, json_data, work_id_folder):
         image_path = os.path.join(image_folder, image_name)
 
         try:
-            tokens = wt.tokenize(entry["text"])
+            tokens = wt.tokenize(entry["rearranged_text"])
             # Apply filters
             if (
                 os.path.exists(image_path)
                 and is_width_greater_than_height(entry["pil_crop_rectangle_coords"])
                 and not entry["has_digit_in_text"]
-                and is_valid_text_len(entry["text"])
+                and is_valid_text_len(entry["rearranged_text"])
                 and not non_word_exist(tokens)
                 and not non_bo_word_exist(tokens)
             ):
@@ -106,7 +99,7 @@ def filter_data(image_folder, json_data, work_id_folder):
 
 def process_work_id_folder(work_id_folder):
     json_file_path = os.path.join(
-        work_id_folder, f"{os.path.basename(work_id_folder)}.json"
+        work_id_folder, f"rearranged_{os.path.basename(work_id_folder)}.json"
     )
     image_folder = os.path.join(work_id_folder, "images")
 
@@ -118,7 +111,9 @@ def process_work_id_folder(work_id_folder):
 
 
 if __name__ == "__main__":
-    super_folder = "../../data/input_reorganized"
+    super_folder = (
+        "/home/gangagyatso/Desktop/project16/image-to-text/data/input_rearrange"
+    )
 
     for work_id in os.listdir(super_folder):
         work_id_path = os.path.join(super_folder, work_id)
