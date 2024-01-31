@@ -41,7 +41,7 @@ if __name__ == "__main__":
     ]
 
     # Base directory to store new folders and JSON files
-    base_directory = "../../data/input_reorganized"
+    base_directory = "../../data/input_rearrange"
 
     # Group data by work ID
     work_data: Dict[str, List[Dict]] = {}
