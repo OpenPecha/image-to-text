@@ -111,9 +111,7 @@ def process_work_id_folder(work_id_folder):
 
 
 if __name__ == "__main__":
-    super_folder = (
-        "/home/gangagyatso/Desktop/project16/image-to-text/data/input_rearrange"
-    )
+    super_folder = "../../data/input_rearrange"
 
     for work_id in os.listdir(super_folder):
         work_id_path = os.path.join(super_folder, work_id)
