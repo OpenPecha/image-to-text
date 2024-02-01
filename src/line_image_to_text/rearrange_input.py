@@ -99,9 +99,7 @@ def process_work_folder(work_folder_path: str):
 
 
 def main():
-    super_folder_path = (
-        "/home/gangagyatso/Desktop/project16/image-to-text/data/input_rearrange"
-    )
+    super_folder_path = "../../data/input_rearrange"
     for work_folder in os.listdir(super_folder_path):
         work_folder_path = os.path.join(super_folder_path, work_folder)
         if os.path.isdir(work_folder_path):
