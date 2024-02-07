@@ -2,9 +2,13 @@ import json
 import os
 from typing import Dict, List
 
+import cv2
 import Levenshtein
-import pytesseract
-from PIL import Image
+from monlam_ocr.exceptions import FailedToLoadImage
+from monlam_ocr.ocr import OCRInference
+
+ocr_model_config_path = "../../Models/OCRModels/DergeTenjur/model_config.json"
+ocr_inference = OCRInference(ocr_model_config_path)
 
 # Define a threshold for similarity score
 SIMILARITY_THRESHOLD = 0.5  # You can adjust this value based on your requirements
@@ -19,9 +23,20 @@ def load_json_data(json_path: str) -> List[Dict]:
         return []
 
 
-def ocr_process_image(image_path: str) -> str:
+def run_line_ocr(image_path: str) -> str:
+    image = [cv2.imread(image_path)]
+    if image is None:
+        FailedToLoadImage(f"Failed to load image from {image_path}")
+        return ""
+
+    predicted_text, prediction = ocr_inference.run(image)
+    return predicted_text
+
+
+def monlam_ocr_process_image(image_path: str) -> str:
     try:
-        return pytesseract.image_to_string(Image.open(image_path), lang="bod")
+        text = run_line_ocr(image_path)
+        return text[0]
     except Exception as e:
         print(f"Error processing image {image_path}: {e}")
         return ""
@@ -44,12 +59,11 @@ def find_closest_match(ocr_text, json_entries):
 def update_json_entries(image_folder: str, json_data: List[Dict]) -> None:
     for entry in json_data:
         image_path = os.path.join(image_folder, entry["image_name"])
-        ocr_text = ocr_process_image(image_path)
-        closest_match, similarity_score = find_closest_match(ocr_text, json_data)
 
-        entry["ocr_text"] = ocr_text  # Storing OCR result separately
+        monlam_ocr_text = monlam_ocr_process_image(image_path)
+        closest_match, similarity_score = find_closest_match(monlam_ocr_text, json_data)
+        entry["ocr_text"] = monlam_ocr_text  # Storing OCR result separately
 
-        # Check if the similarity score is above the threshold
         if similarity_score >= SIMILARITY_THRESHOLD:
             entry["rearranged_text"] = closest_match
         else:
@@ -100,6 +114,7 @@ def process_work_folder(work_folder_path: str):
 
 def main():
     super_folder_path = "../../data/input_rearranged"
+
     for work_folder in os.listdir(super_folder_path):
         work_folder_path = os.path.join(super_folder_path, work_folder)
         if os.path.isdir(work_folder_path):
