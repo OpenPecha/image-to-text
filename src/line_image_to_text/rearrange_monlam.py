@@ -7,7 +7,7 @@ import Levenshtein
 from monlam_ocr.exceptions import FailedToLoadImage
 from monlam_ocr.ocr import OCRInference
 
-ocr_model_config_path = "../../Models/OCRModels/DergeTenjur/model_config.json"
+ocr_model_config_path = "./Models/OCRModels/DergeTenjur/model_config.json"
 ocr_inference = OCRInference(ocr_model_config_path)
 
 # Define a threshold for similarity score

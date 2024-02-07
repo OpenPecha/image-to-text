@@ -1,0 +1,274 @@
+[
+    {
+        "rectangle_coords": [
+            [
+                66,
+                329
+            ],
+            [
+                67,
+                271
+            ],
+            [
+                762,
+                277
+            ],
+            [
+                761,
+                335
+            ]
+        ],
+        "pil_crop_rectangle_coords": [
+            66,
+            271,
+            762,
+            335
+        ],
+        "origin_image": "I01JW1270005.jpg",
+        "image_name": "I01JW1270005_0.jpg",
+        "has_digit_in_text": false,
+        "volume": "I01JW127",
+        "book_id": "W00EGS1016686",
+        "repo_id": "I972048BA",
+        "text": "ཨུ་ཡོན།"
+
+    },
+    {
+        "rectangle_coords": [
+            [
+                117,
+                393
+            ],
+            [
+                118,
+                339
+            ],
+            [
+                707,
+                344
+            ],
+            [
+                706,
+                398
+            ]
+        ],
+        "pil_crop_rectangle_coords": [
+            117,
+            339,
+            707,
+            398
+        ],
+        "origin_image": "I01JW1270005.jpg",
+        "image_name": "I01JW1270005_1.jpg",
+        "has_digit_in_text": false,
+        "volume": "I01JW127",
+        "book_id": "W00EGS1016686",
+        "repo_id": "I972048BA",
+        "text": "བྱུང་བ་ཕྱོགས་བསྒྲིགས་རིན་ཆེན་སྒྲོམ་བརྒྱ་"
+
+    },
+    {
+        "rectangle_coords": [
+            [
+                239,
+                122
+            ],
+            [
+                239,
+                150
+            ],
+            [
+                575,
+                146
+            ],
+            [
+                575,
+                119
+            ]
+        ],
+        "pil_crop_rectangle_coords": [
+            239,
+            119,
+            575,
+            150
+        ],
+        "origin_image": "I01JW1270006.jpg",
+        "image_name": "I01JW1270006_1.jpg",
+        "has_digit_in_text": false,
+        "volume": "I01JW127",
+        "book_id": "W00EGS1016686",
+        "repo_id": "I972048BA",
+        "text": "པད་མཆོག (རྫོང་དམངས་ཆེན་ཨུ་ཡོན་ལྷན་ཁང་གི་ཀྲུའུ་རིན）"
+
+    },
+    {
+        "rectangle_coords": [
+            [
+                238,
+                156
+            ],
+            [
+                238,
+                184
+            ],
+            [
+                652,
+                180
+            ],
+            [
+                652,
+                153
+            ]
+        ],
+        "pil_crop_rectangle_coords": [
+            238,
+            153,
+            652,
+            184
+        ],
+        "origin_image": "I01JW1270006.jpg",
+        "image_name": "I01JW1270006_2.jpg",
+        "has_digit_in_text": false,
+        "volume": "I01JW127",
+        "book_id": "W00EGS1016686",
+        "repo_id": "I972048BA",
+        "text": "ཡོན་ཏན། (རྫོང་ཨུ་ཧྲུའུ་ཅི་གཞོན་པ། རྫོང་སྲིད་གཞུང་གི་རྫོང་གཙོ)"
+
+    },
+    {
+        "rectangle_coords": [
+            [
+                239,
+                188
+            ],
+            [
+                239,
+                218
+            ],
+            [
+                696,
+                212
+            ],
+            [
+                696,
+                183
+            ]
+        ],
+        "pil_crop_rectangle_coords": [
+            239,
+            183,
+            696,
+            218
+        ],
+        "origin_image": "I01JW1270006.jpg",
+        "image_name": "I01JW1270006_3.jpg",
+        "has_digit_in_text": false,
+        "volume": "I01JW127",
+        "book_id": "W00EGS1016686",
+        "repo_id": "I972048BA",
+        "text": "ཀུན་དགའ་རྣམ་རྒྱལ། (རྫོང་ཨུ་རྒྱུན་ཨུ། སྒྲིག་ཨུ་ཧྲུའུ་ཅི)"
+
+    },
+    {
+        "rectangle_coords": [
+            [
+                239,
+                222
+            ],
+            [
+                239,
+                252
+            ],
+            [
+                623,
+                248
+            ],
+            [
+                623,
+                219
+            ]
+        ],
+        "pil_crop_rectangle_coords": [
+            239,
+            219,
+            623,
+            252
+        ],
+        "origin_image": "I01JW1270006.jpg",
+        "image_name": "I01JW1270006_4.jpg",
+        "has_digit_in_text": false,
+        "volume": "I01JW127",
+        "book_id": "W00EGS1016686",
+        "repo_id": "I972048BA",
+        "text": "ཝུའུ་ཧྲིང་ལོས།(ཁུལ་ཨུའི་རྒྱུན་ཨུ། རྫོང་ཨུ་ཧྲུའུ་ཅི)"
+
+    },
+    {
+        "rectangle_coords": [
+            [
+                63,
+                494
+            ],
+            [
+                63,
+                515
+            ],
+            [
+                123,
+                515
+            ],
+            [
+                123,
+                494
+            ]
+        ],
+        "pil_crop_rectangle_coords": [
+            63,
+            494,
+            123,
+            515
+        ],
+        "origin_image": "I01JW1270006.jpg",
+        "image_name": "I01JW1270006_12.jpg",
+        "has_digit_in_text": false,
+        "volume": "I01JW127",
+        "book_id": "W00EGS1016686",
+        "repo_id": "I972048BA",
+        "text": "སྐལ་བཟང་རིན་ཆེན།"
+
+    },
+    {
+        "rectangle_coords": [
+            [
+                44,
+                197
+            ],
+            [
+                46,
+                138
+            ],
+            [
+                75,
+                138
+            ],
+            [
+                73,
+                197
+            ]
+        ],
+        "pil_crop_rectangle_coords": [
+            44,
+            138,
+            75,
+            197
+        ],
+        "origin_image": "I1KG90740015.jpg",
+        "image_name": "I1KG90740015_0.jpg",
+        "has_digit_in_text": false,
+        "volume": "I1KG9074",
+        "book_id": "W1KG9042",
+        "repo_id": "I8A3379D7",
+        "text": "ཁམས་སྒོམ་སྡེ་ནང་ཆེན་པའི་དགོན་ཁག་རྣམས་ཀྱི་"
+
+    }
+]

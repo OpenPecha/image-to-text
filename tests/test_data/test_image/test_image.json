@@ -1,0 +1,73 @@
+[
+    {
+        "rectangle_coords": [
+            [
+                117,
+                393
+            ],
+            [
+                118,
+                339
+            ],
+            [
+                707,
+                344
+            ],
+            [
+                706,
+                398
+            ]
+        ],
+        "pil_crop_rectangle_coords": [
+            117,
+            339,
+            707,
+            398
+        ],
+        "origin_image": "I01JW1270005.jpg",
+        "image_name": "I01JW1270005_1.jpg",
+        "has_digit_in_text": false,
+        "volume": "I01JW127",
+        "book_id": "W00EGS1016686",
+        "repo_id": "I972048BA",
+        "text": "བྱུང་བ་ཕྱོགས་བསྒྲིགས་རིན་ཆེན་སྒྲོམ་བརྒྱ་",
+        "ocr_text": "བྱང་བ་ཕྱོགས་བསླེགས་རེན་ཆེན་སྒོམ་བརྒྱ་\n\f",
+        "rearranged_text": "བྱུང་བ་ཕྱོགས་བསྒྲིགས་རིན་ཆེན་སྒྲོམ་བརྒྱ་"
+    },
+
+    {
+        "rectangle_coords": [
+            [
+                44,
+                197
+            ],
+            [
+                46,
+                138
+            ],
+            [
+                75,
+                138
+            ],
+            [
+                73,
+                197
+            ]
+        ],
+        "pil_crop_rectangle_coords": [
+            44,
+            138,
+            75,
+            197
+        ],
+        "origin_image": "I1KG90740015.jpg",
+        "image_name": "I1KG90740015_0.jpg",
+        "has_digit_in_text": false,
+        "volume": "I1KG9074",
+        "book_id": "W1KG9042",
+        "repo_id": "I8A3379D7",
+        "text": "ཁམས་སྒོམ་སྡེ་ནང་ཆེན་པའི་དགོན་ཁག་རྣམས་ཀྱི་",
+        "ocr_text": "\f",
+        "rearranged_text": "no matching text found"
+    }
+]
