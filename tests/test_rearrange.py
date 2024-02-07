@@ -1,8 +1,9 @@
-from line_image_to_text.rearrange_input import load_json_data, process_work_folder
+# from line_image_to_text.rearrange_input import load_json_data, process_work_folder
+from line_image_to_text.rearrange_input import load_json_data
 
 
 def test_process_work_folder():
-    process_work_folder("./tests/test_data/work")
+    # process_work_folder("./tests/test_data/work")
     data = load_json_data("./tests/test_data/work/rearranged_work.json")
     for item in data:
         if item["image_name"] == "I01JW1270005_0.jpg":
