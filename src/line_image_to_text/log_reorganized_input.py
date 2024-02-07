@@ -71,10 +71,10 @@ def process_work_id_folders(super_folder):
 
 
 # Example usage
-log_file_path = "../../data/input_reorganized/mismatch_log.txt"  # Path to log file
+log_file_path = "../../data/input_rearranged/mismatch_log.txt"  # Path to log file
 setup_logging(log_file_path)
 
-super_folder = "../../data/input_reorganized"  # Replace with your super folder path
+super_folder = "../../data/input_rearranged"  # Replace with your super folder path
 total_images, total_json_items, mismatches = process_work_id_folders(super_folder)
 print(f"Total images: {total_images}, Total JSON items: {total_json_items}")
 

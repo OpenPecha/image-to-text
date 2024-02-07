@@ -7,6 +7,13 @@ from botok import WordTokenizer
 wt = WordTokenizer()
 
 
+def tibetan_num_exist(tokens):
+    for token in tokens:
+        if token.chunk_type == "NUM":
+            return True
+    return False
+
+
 def load_json_data(json_path):
     """Load JSON data from the given file path."""
     with open(json_path, encoding="utf-8") as file:
@@ -68,6 +75,7 @@ def filter_data(image_folder, json_data, work_id_folder):
                 and is_valid_text_len(entry["rearranged_text"])
                 and not non_word_exist(tokens)
                 and not non_bo_word_exist(tokens)
+                and not tibetan_num_exist(tokens)
             ):
                 valid_pairs.append(entry)
             else:
@@ -111,7 +119,9 @@ def process_work_id_folder(work_id_folder):
 
 
 if __name__ == "__main__":
-    super_folder = "../../data/input_rearrange"
+    super_folder = (
+        "/home/gangagyatso/Desktop/project18/monlam_ocr/data/input_rearranged"
+    )
 
     for work_id in os.listdir(super_folder):
         work_id_path = os.path.join(super_folder, work_id)
