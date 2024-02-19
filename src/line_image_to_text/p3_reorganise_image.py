@@ -1,6 +1,5 @@
 import json
 import os
-from datetime import datetime
 
 from PIL import Image
 
@@ -37,23 +36,10 @@ def crop_image(image_path, crop_coords):
 
 
 def reorganize_cropped_images(json_folder_path: str, image_folder_path: str):
-    # Define a specific cutoff time
-    cutoff_time = datetime(2024, 2, 18, 12, 0, 0)
-
-    # Collect eligible work folders from super_folder_2 based on cutoff time
-    eligible_folders = []
-    for work_folder in os.listdir(image_folder_path):
-        folder_path = os.path.join(image_folder_path, work_folder)
-        if os.path.isdir(folder_path):
-            last_mod_time = datetime.fromtimestamp(os.path.getmtime(folder_path))
-            if last_mod_time < cutoff_time:
-                eligible_folders.append(work_folder)
 
     # Navigate through each work folder in super_folder_1
     for work_folder in os.listdir(json_folder_path):
         work_folder_path = os.path.join(json_folder_path, work_folder)
-        if not os.path.isdir(work_folder_path) or work_folder not in eligible_folders:
-            continue  # Skip if not a directory or not in eligible folders
 
         json_file_path = os.path.join(work_folder_path, work_folder + ".json")
         if not os.path.exists(json_file_path):
