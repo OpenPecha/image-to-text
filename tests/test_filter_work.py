@@ -1,12 +1,12 @@
 from botok import WordTokenizer
 
-from line_image_to_text.filter_work import (
+from line_image_to_text.p5_filter_work import (
+    is_non_bo_word_exist,
+    is_non_word_exist,
+    is_tibetan_num_exist,
     is_valid_text_len,
     is_width_greater_than_height,
     load_json_data,
-    non_bo_word_exist,
-    non_word_exist,
-    tibetan_num_exist,
 )
 
 wt = WordTokenizer()
@@ -18,7 +18,7 @@ text5 = "བོད་ཡིག་སྤྱ is good"
 
 def test_tibetan_num_exist():
     token = wt.tokenize(text1)
-    assert tibetan_num_exist(token) is True
+    assert is_tibetan_num_exist(token) is True
 
 
 def test_is_width_greater_than_height():
@@ -36,9 +36,9 @@ def test_is_valid_text_len():
 
 def test_non_word_exist():
     token = wt.tokenize(text4)
-    assert non_word_exist(token) is True
+    assert is_non_word_exist(token) is True
 
 
 def test_non_bo_word_exist():
     token = wt.tokenize(text5)
-    assert non_bo_word_exist(token) is True
+    assert is_non_bo_word_exist(token) is True

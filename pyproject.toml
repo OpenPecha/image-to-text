@@ -28,7 +28,9 @@ dependencies = [
   "pyewts>=0.2.0",
   "botok>=0.8.12",
   "Levenshtein>=0.24.0",
-  "pytesseract>=0.3.10"
+  "pytesseract>=0.3.10",
+  "bdrc-images-and-ocr-downloader@git+https://github.com/OpenPecha/bdrc-images-and-ocr-downloader@main",
+
 ]
 
 

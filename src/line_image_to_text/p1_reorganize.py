@@ -21,16 +21,24 @@ def process_json_files(folder_path):
         # Create the work folder if it doesn't exist
         os.makedirs(work_folder_path, exist_ok=True)
 
-        new_data = []  # List to hold the reformatted data
+        new_structure = {}  # Dictionary to hold the new structure
+        # Define the new file name and path
+        new_file_name = f"{work_folder_name}.json"
+        new_file_path = os.path.join(work_folder_path, new_file_name)
+
+        if os.path.exists(new_file_path):
+            # Load existing data if the JSON file already exists
+            with open(new_file_path, encoding="utf-8") as existing_file:
+                new_structure = json.load(existing_file)
 
         for item in data:
-            origin_image = item.get("origin_image")
+            page_image_id = item.get("origin_image")
             volume = item.get("volume")
             book_id = item.get("book_id")
             repo_id = item.get("repo_id")
             rectangles = item.get("rectangles", [])
             text_lines = item.get("text", [])
-            base_name, original_ext = os.path.splitext(origin_image)
+            base_name, original_ext = os.path.splitext(page_image_id)
 
             for i, rectangle in enumerate(rectangles):
                 image_name = f"{base_name}_{i}{original_ext}"  # Use original extension
@@ -39,36 +47,21 @@ def process_json_files(folder_path):
                     if i < len(item.get("pil_crop_rectangle_coords", []))
                     else []
                 )
-                text = text_lines[i] if i < len(text_lines) else ""
 
-                new_item = {
-                    "rectangle_coords": rectangle,
-                    "pil_crop_rectangle_coords": pil_coords,
-                    "origin_image": origin_image,
-                    "image_name": image_name,
-                    "has_digit_in_text": any(char.isdigit() for char in text),
-                    "volume": volume,
-                    "book_id": book_id,
+                if volume not in new_structure:
+                    new_structure[volume] = {}
+                if page_image_id not in new_structure[volume]:
+                    new_structure[volume][page_image_id] = {}
+
+                new_structure[volume][page_image_id]["text"] = text_lines
+                new_structure[volume][page_image_id][image_name] = {
+                    "line_image_coord": pil_coords,
                     "repo_id": repo_id,
-                    "text": text,
                 }
-
-                new_data.append(new_item)
-
-            # Handle case where there are more text lines than rectangles
-            image_size = len(rectangles)
-            for extra_text in text_lines[image_size:]:
-                extra_item = new_item.copy()  # Copy the last item
-                extra_item["text"] = extra_text  # Update the text
-                new_data.append(extra_item)
-
-        # Define the new file name and path
-        new_file_name = f"{work_folder_name}.json"
-        new_file_path = os.path.join(work_folder_path, new_file_name)
 
         # Write the new data to the new JSON file within the work folder
         with open(new_file_path, "w", encoding="utf-8") as new_file:
-            json.dump(new_data, new_file, ensure_ascii=False, indent=4)
+            json.dump(new_structure, new_file, ensure_ascii=False, indent=4)
 
         # Move the original JSON file to the work folder
         original_file_new_path = os.path.join(
@@ -78,5 +71,5 @@ def process_json_files(folder_path):
 
 
 # Example usage
-folder_path = "../../data/third_problem"
+folder_path = "/media/gangagyatso/media files/third_problem"
 process_json_files(folder_path)
