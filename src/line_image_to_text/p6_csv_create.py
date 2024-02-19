@@ -2,7 +2,6 @@ import csv
 import json
 import os
 import shutil
-from datetime import datetime
 
 
 def load_json_data(file_path):
@@ -20,7 +19,7 @@ def count_rows_in_csv(file_path):
     return row_count
 
 
-def process_volume(volume_path, image_output_folder, csv_output_folder, max_rows=10000):
+def process_volume(volume_path, image_output_folder, csv_output_folder):
     os.makedirs(
         os.path.dirname(csv_output_folder), exist_ok=True
     )  # Ensure directory exists
@@ -45,14 +44,7 @@ def process_volume(volume_path, image_output_folder, csv_output_folder, max_rows
 
     json_data = load_json_data(json_file_path)
 
-    batch_num = 0
-    for file in os.listdir(os.path.dirname(csv_output_folder)):
-        if file.endswith(".csv"):
-            batch_num += 1
-    batch_num = 0 if batch_num <= 1 else batch_num - 1
-    images_batch_folder = f"{image_output_folder}_batch_{batch_num}"
-    os.makedirs(images_batch_folder, exist_ok=True)
-    csv_file_path = f"{csv_output_folder}_batch_{batch_num}.csv"
+    csv_file_path = f"{csv_output_folder}-{work_folder_name}.csv"
     csv_file = open(
         csv_file_path,
         mode="a+" if os.path.exists(csv_file_path) else "w",
@@ -60,6 +52,10 @@ def process_volume(volume_path, image_output_folder, csv_output_folder, max_rows
         encoding="utf-8",
     )
     writer = csv.writer(csv_file)
+
+    images_batch_folder = f"{image_output_folder}-{work_folder_name}"
+    os.makedirs(images_batch_folder, exist_ok=True)
+
     if os.path.getsize(csv_file_path) == 0:  # If file is new, write the header
         writer.writerow(["source", "line_image_id", "repo_name", "text"])
     row_count = (
@@ -74,25 +70,6 @@ def process_volume(volume_path, image_output_folder, csv_output_folder, max_rows
             continue
 
         line_data = json_data[line_id]  # Get the data for this line
-
-        if row_count >= max_rows:  # Check if we need to start a new batch
-            csv_file.close()  # Close the current CSV file before starting a new batch
-            batch_num += 1  # Increment batch number for a new batch
-            images_batch_folder = f"{image_output_folder}_batch_{batch_num}"  # Define new image batch folder
-            os.makedirs(
-                images_batch_folder, exist_ok=True
-            )  # Create the new image batch folder
-            csv_file_path = (
-                f"{csv_output_folder}_batch_{batch_num}.csv"  # Define new CSV file path
-            )
-            csv_file = open(
-                csv_file_path, mode="w", newline="", encoding="utf-8"
-            )  # Open new CSV file
-            writer = csv.writer(csv_file)  # Create a writer for the new CSV
-            writer.writerow(
-                ["source", "line_image_id", "repo_name", "text"]
-            )  # Write header in new CSV
-            row_count = 0  # Reset row count for the new CSV
 
         # Process and write current line data to CSV
         source = f"{work_folder_name}/{volume_id}/{line_id.split('_')[0]}"
@@ -128,24 +105,9 @@ def create_csv(
     csv_output_folder: str,
 ):
 
-    # Define a specific cutoff time
-    cutoff_time = datetime(2024, 2, 16, 12, 0, 0)
-
-    # Collect eligible work folders from super_folder_2 based on cutoff time
-    eligible_folders = []
-    for work_folder in os.listdir(image_folder_path):
-        folder_path = os.path.join(image_folder_path, work_folder)
-        if os.path.isdir(folder_path):
-            last_mod_time = datetime.fromtimestamp(os.path.getmtime(folder_path))
-            if last_mod_time < cutoff_time:
-                eligible_folders.append(work_folder)
-
-    # Navigate through each work folder in super_folder_1
-    for work_folder in os.listdir(json_folder_path):
-        work_folder_path = os.path.join(json_folder_path, work_folder)
-        if not os.path.isdir(work_folder_path) or work_folder not in eligible_folders:
-            continue  # Skip if not a directory or not in eligible folders
-        process_work_folder(work_folder_path, image_output_folder, csv_output_folder)
+    # Integrate downloading into the workflow
+    work_folder_path = json_folder_path
+    process_work_folder(work_folder_path, image_output_folder, csv_output_folder)
 
 
 if __name__ == "__main__":
