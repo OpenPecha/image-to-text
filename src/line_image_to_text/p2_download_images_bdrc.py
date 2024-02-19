@@ -15,7 +15,7 @@ def construct_s3_key(work_id, image_group_id, image_file_name):
     return s3_key
 
 
-def download_work_images(folder_path: str):
+def download_work_images(json_folder_path: str):
     # Integrate downloading into the workflow
     for work_folder in os.listdir(json_folder_path):
         work_folder_path = os.path.join(json_folder_path, work_folder)
