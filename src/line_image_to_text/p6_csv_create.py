@@ -20,12 +20,12 @@ def count_rows_in_csv(file_path):
     return row_count
 
 
-def process_volume(volume_path, images_base_folder, base_filename, max_rows=10000):
+def process_volume(volume_path, image_output_folder, csv_output_folder, max_rows=10000):
     os.makedirs(
-        os.path.dirname(base_filename), exist_ok=True
+        os.path.dirname(csv_output_folder), exist_ok=True
     )  # Ensure directory exists
     os.makedirs(
-        os.path.dirname(images_base_folder), exist_ok=True
+        os.path.dirname(image_output_folder), exist_ok=True
     )  # Ensure directory exists
 
     csv_created_marker_path = os.path.join(volume_path, ".cs")
@@ -46,13 +46,13 @@ def process_volume(volume_path, images_base_folder, base_filename, max_rows=1000
     json_data = load_json_data(json_file_path)
 
     batch_num = 0
-    for file in os.listdir(os.path.dirname(base_filename)):
+    for file in os.listdir(os.path.dirname(csv_output_folder)):
         if file.endswith(".csv"):
             batch_num += 1
     batch_num = 0 if batch_num <= 1 else batch_num - 1
-    images_batch_folder = f"{images_base_folder}_batch_{batch_num}"
+    images_batch_folder = f"{image_output_folder}_batch_{batch_num}"
     os.makedirs(images_batch_folder, exist_ok=True)
-    csv_file_path = f"{base_filename}_batch_{batch_num}.csv"
+    csv_file_path = f"{csv_output_folder}_batch_{batch_num}.csv"
     csv_file = open(
         csv_file_path,
         mode="a+" if os.path.exists(csv_file_path) else "w",
@@ -78,12 +78,12 @@ def process_volume(volume_path, images_base_folder, base_filename, max_rows=1000
         if row_count >= max_rows:  # Check if we need to start a new batch
             csv_file.close()  # Close the current CSV file before starting a new batch
             batch_num += 1  # Increment batch number for a new batch
-            images_batch_folder = f"{images_base_folder}_batch_{batch_num}"  # Define new image batch folder
+            images_batch_folder = f"{image_output_folder}_batch_{batch_num}"  # Define new image batch folder
             os.makedirs(
                 images_batch_folder, exist_ok=True
             )  # Create the new image batch folder
             csv_file_path = (
-                f"{base_filename}_batch_{batch_num}.csv"  # Define new CSV file path
+                f"{csv_output_folder}_batch_{batch_num}.csv"  # Define new CSV file path
             )
             csv_file = open(
                 csv_file_path, mode="w", newline="", encoding="utf-8"
@@ -115,37 +115,44 @@ def process_volume(volume_path, images_base_folder, base_filename, max_rows=1000
         file.write("csv_created")
 
 
-def process_work_folder(work_folder_path, images_base_folder, base_filename):
+def process_work_folder(work_folder_path, image_output_folder, csv_output_folder):
     for volume_id in os.listdir(os.path.join(work_folder_path, "image")):
         volume_path = os.path.join(work_folder_path, "image", volume_id)
-        process_volume(volume_path, images_base_folder, base_filename)
+        process_volume(volume_path, image_output_folder, csv_output_folder)
 
 
-def main():
-    super_folder_1_path = "/media/gangagyatso/media files/third_problem"
-    super_folder_2_path = "/home/gangagyatso/Desktop/project16/data"
-    images_base_folder = "/media/gangagyatso/docs/output2/images/image"
-    base_filename = "/media/gangagyatso/docs/output2/csv/csv"
+def create_csv(
+    json_folder_path: str,
+    image_folder_path: str,
+    image_output_folder: str,
+    csv_output_folder: str,
+):
 
     # Define a specific cutoff time
     cutoff_time = datetime(2024, 2, 16, 12, 0, 0)
 
     # Collect eligible work folders from super_folder_2 based on cutoff time
     eligible_folders = []
-    for work_folder in os.listdir(super_folder_2_path):
-        folder_path = os.path.join(super_folder_2_path, work_folder)
+    for work_folder in os.listdir(image_folder_path):
+        folder_path = os.path.join(image_folder_path, work_folder)
         if os.path.isdir(folder_path):
             last_mod_time = datetime.fromtimestamp(os.path.getmtime(folder_path))
             if last_mod_time < cutoff_time:
                 eligible_folders.append(work_folder)
 
     # Navigate through each work folder in super_folder_1
-    for work_folder in os.listdir(super_folder_1_path):
-        work_folder_path = os.path.join(super_folder_1_path, work_folder)
+    for work_folder in os.listdir(json_folder_path):
+        work_folder_path = os.path.join(json_folder_path, work_folder)
         if not os.path.isdir(work_folder_path) or work_folder not in eligible_folders:
             continue  # Skip if not a directory or not in eligible folders
-        process_work_folder(work_folder_path, images_base_folder, base_filename)
+        process_work_folder(work_folder_path, image_output_folder, csv_output_folder)
 
 
 if __name__ == "__main__":
-    main()
+    json_folder_path = "/media/gangagyatso/media files/third_problem"
+    image_folder_path = "/home/gangagyatso/Desktop/project16/data"
+    image_output_folder = "/media/gangagyatso/docs/output2/images/image"
+    csv_output_folder = "/media/gangagyatso/docs/output2/csv/csv"
+    create_csv(
+        json_folder_path, image_folder_path, image_output_folder, csv_output_folder
+    )

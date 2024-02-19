@@ -36,87 +36,91 @@ def crop_image(image_path, crop_coords):
         return None
 
 
-# Define paths to the super folders
-super_folder_1_path = "/media/gangagyatso/media files/third_problem"
-super_folder_2_path = "/home/gangagyatso/Desktop/project16/data"
+def reorganize_cropped_images(json_folder_path: str, image_folder_path: str):
+    # Define a specific cutoff time
+    cutoff_time = datetime(2024, 2, 18, 12, 0, 0)
 
-# Define a specific cutoff time
-cutoff_time = datetime(2024, 2, 18, 12, 0, 0)
+    # Collect eligible work folders from super_folder_2 based on cutoff time
+    eligible_folders = []
+    for work_folder in os.listdir(image_folder_path):
+        folder_path = os.path.join(image_folder_path, work_folder)
+        if os.path.isdir(folder_path):
+            last_mod_time = datetime.fromtimestamp(os.path.getmtime(folder_path))
+            if last_mod_time < cutoff_time:
+                eligible_folders.append(work_folder)
 
-# Collect eligible work folders from super_folder_2 based on cutoff time
-eligible_folders = []
-for work_folder in os.listdir(super_folder_2_path):
-    folder_path = os.path.join(super_folder_2_path, work_folder)
-    if os.path.isdir(folder_path):
-        last_mod_time = datetime.fromtimestamp(os.path.getmtime(folder_path))
-        if last_mod_time < cutoff_time:
-            eligible_folders.append(work_folder)
+    # Navigate through each work folder in super_folder_1
+    for work_folder in os.listdir(json_folder_path):
+        work_folder_path = os.path.join(json_folder_path, work_folder)
+        if not os.path.isdir(work_folder_path) or work_folder not in eligible_folders:
+            continue  # Skip if not a directory or not in eligible folders
 
-# Navigate through each work folder in super_folder_1
-for work_folder in os.listdir(super_folder_1_path):
-    work_folder_path = os.path.join(super_folder_1_path, work_folder)
-    if not os.path.isdir(work_folder_path) or work_folder not in eligible_folders:
-        continue  # Skip if not a directory or not in eligible folders
+        json_file_path = os.path.join(work_folder_path, work_folder + ".json")
+        if not os.path.exists(json_file_path):
+            continue  # Skip if JSON file does not exist
 
-    json_file_path = os.path.join(work_folder_path, work_folder + ".json")
-    if not os.path.exists(json_file_path):
-        continue  # Skip if JSON file does not exist
+        with open(json_file_path) as json_file:
+            data = json.load(json_file)
 
-    with open(json_file_path) as json_file:
-        data = json.load(json_file)
+        for volume_id, volume_item in data.items():
+            work_id = work_folder
+            image_folder_volume_path = os.path.join(
+                work_folder_path, "image", volume_id
+            )
+            os.makedirs(image_folder_volume_path, exist_ok=True)
 
-    for volume_id, volume_item in data.items():
-        work_id = work_folder
-        image_folder_volume_path = os.path.join(work_folder_path, "image", volume_id)
-        os.makedirs(image_folder_volume_path, exist_ok=True)
-
-        csv_created_marker_path = os.path.join(image_folder_volume_path, ".cs")
-        if os.path.exists(csv_created_marker_path):
-            print(f"Skipping already csv created folder: {image_folder_volume_path}")
-            continue
-
-        for page_id, page_data in volume_item.items():
-            for line_image_id, line_image_data in page_data.items():
-                if line_image_id == "text":
-                    continue
-                coords = line_image_data.get("line_image_coord", [])
-
-                image_group_suffix = get_suffix(volume_id)
-                origin_image_folder = f"{work_id}-{image_group_suffix}"
-                origin_image_path = os.path.join(
-                    super_folder_2_path,
-                    work_folder,
-                    origin_image_folder,
-                    "images",
-                    page_id,
+            csv_created_marker_path = os.path.join(image_folder_volume_path, ".cs")
+            if os.path.exists(csv_created_marker_path):
+                print(
+                    f"Skipping already csv created folder: {image_folder_volume_path}"
                 )
+                continue
 
-                if not os.path.exists(origin_image_path):
-                    print(f"Origin image does not exist: {origin_image_path}")
-                    continue
+            for page_id, page_data in volume_item.items():
+                for line_image_id, line_image_data in page_data.items():
+                    if line_image_id == "text":
+                        continue
+                    coords = line_image_data.get("line_image_coord", [])
 
-                image_folder_path = os.path.join(
-                    work_folder_path, "image", volume_id, page_id.split(".")[0]
-                )
-                os.makedirs(image_folder_path, exist_ok=True)
+                    image_group_suffix = get_suffix(volume_id)
+                    origin_image_folder = f"{work_id}-{image_group_suffix}"
+                    origin_image_path = os.path.join(
+                        image_folder_path,
+                        work_folder,
+                        origin_image_folder,
+                        "images",
+                        page_id,
+                    )
 
-                cropped_image_path = os.path.join(image_folder_path, line_image_id)
+                    if not os.path.exists(origin_image_path):
+                        print(f"Origin image does not exist: {origin_image_path}")
+                        continue
 
-                if os.path.exists(cropped_image_path):
-                    print(f"cropped image does already exist: {cropped_image_path}")
-                    continue
+                    image_folder_path = os.path.join(
+                        work_folder_path, "image", volume_id, page_id.split(".")[0]
+                    )
+                    os.makedirs(image_folder_path, exist_ok=True)
 
-                cropped_image = crop_image(origin_image_path, coords)
-                if cropped_image is not None:
-                    try:
-                        cropped_image.save(cropped_image_path)
-                        print(f"Image successfully saved to {cropped_image_path}")
-                    except OSError as e:
-                        print(f"Failed to save image. OSError: {e}")
-                    except Exception as e:
-                        print(
-                            f"An unexpected error occurred while saving the image: {e}"
-                        )
+                    cropped_image_path = os.path.join(image_folder_path, line_image_id)
+
+                    if os.path.exists(cropped_image_path):
+                        print(f"cropped image does already exist: {cropped_image_path}")
+                        continue
+
+                    cropped_image = crop_image(origin_image_path, coords)
+                    if cropped_image is not None:
+                        try:
+                            cropped_image.save(cropped_image_path)
+                            print(f"Image successfully saved to {cropped_image_path}")
+                        except OSError as e:
+                            print(f"Failed to save image. OSError: {e}")
+                        except Exception as e:
+                            print(
+                                f"An unexpected error occurred while saving the image: {e}"
+                            )
 
 
-print("Task completed.")
+if __name__ == "__main__":
+    # Define paths to the super folders
+    json_folder_path = "/media/gangagyatso/media files/third_problem"
+    image_folder_path = "/home/gangagyatso/Desktop/project16/data"
