@@ -2,7 +2,6 @@ import csv
 import json
 import os
 import shutil
-from datetime import datetime
 
 
 def load_json_data(file_path):
@@ -50,8 +49,7 @@ def process_volume(volume_path, image_output_folder, csv_output_folder, max_rows
         if file.endswith(".csv"):
             batch_num += 1
     batch_num = 0 if batch_num <= 1 else batch_num - 1
-    images_batch_folder = f"{image_output_folder}_batch_{batch_num}"
-    os.makedirs(images_batch_folder, exist_ok=True)
+
     csv_file_path = f"{csv_output_folder}_batch_{batch_num}.csv"
     csv_file = open(
         csv_file_path,
@@ -60,6 +58,10 @@ def process_volume(volume_path, image_output_folder, csv_output_folder, max_rows
         encoding="utf-8",
     )
     writer = csv.writer(csv_file)
+
+    images_batch_folder = f"{image_output_folder}_batch_{batch_num}"
+    os.makedirs(images_batch_folder, exist_ok=True)
+
     if os.path.getsize(csv_file_path) == 0:  # If file is new, write the header
         writer.writerow(["source", "line_image_id", "repo_name", "text"])
     row_count = (
@@ -78,10 +80,7 @@ def process_volume(volume_path, image_output_folder, csv_output_folder, max_rows
         if row_count >= max_rows:  # Check if we need to start a new batch
             csv_file.close()  # Close the current CSV file before starting a new batch
             batch_num += 1  # Increment batch number for a new batch
-            images_batch_folder = f"{image_output_folder}_batch_{batch_num}"  # Define new image batch folder
-            os.makedirs(
-                images_batch_folder, exist_ok=True
-            )  # Create the new image batch folder
+
             csv_file_path = (
                 f"{csv_output_folder}_batch_{batch_num}.csv"  # Define new CSV file path
             )
@@ -92,6 +91,8 @@ def process_volume(volume_path, image_output_folder, csv_output_folder, max_rows
             writer.writerow(
                 ["source", "line_image_id", "repo_name", "text"]
             )  # Write header in new CSV
+            images_batch_folder = f"{image_output_folder}_batch_{batch_num}"
+            os.makedirs(images_batch_folder, exist_ok=True)
             row_count = 0  # Reset row count for the new CSV
 
         # Process and write current line data to CSV
@@ -123,28 +124,13 @@ def process_work_folder(work_folder_path, image_output_folder, csv_output_folder
 
 def create_csv(
     json_folder_path: str,
-    image_folder_path: str,
     image_output_folder: str,
     csv_output_folder: str,
 ):
 
-    # Define a specific cutoff time
-    cutoff_time = datetime(2024, 2, 16, 12, 0, 0)
-
-    # Collect eligible work folders from super_folder_2 based on cutoff time
-    eligible_folders = []
-    for work_folder in os.listdir(image_folder_path):
-        folder_path = os.path.join(image_folder_path, work_folder)
-        if os.path.isdir(folder_path):
-            last_mod_time = datetime.fromtimestamp(os.path.getmtime(folder_path))
-            if last_mod_time < cutoff_time:
-                eligible_folders.append(work_folder)
-
     # Navigate through each work folder in super_folder_1
     for work_folder in os.listdir(json_folder_path):
         work_folder_path = os.path.join(json_folder_path, work_folder)
-        if not os.path.isdir(work_folder_path) or work_folder not in eligible_folders:
-            continue  # Skip if not a directory or not in eligible folders
         process_work_folder(work_folder_path, image_output_folder, csv_output_folder)
 
 
@@ -153,6 +139,4 @@ if __name__ == "__main__":
     image_folder_path = "/home/gangagyatso/Desktop/project16/data"
     image_output_folder = "/media/gangagyatso/docs/output2/images/image"
     csv_output_folder = "/media/gangagyatso/docs/output2/csv/csv"
-    create_csv(
-        json_folder_path, image_folder_path, image_output_folder, csv_output_folder
-    )
+    create_csv(json_folder_path, image_output_folder, csv_output_folder)
