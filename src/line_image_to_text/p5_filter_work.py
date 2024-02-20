@@ -109,11 +109,9 @@ def process_work_folder(work_folder_path: str):
 
 
 def filter_line_images(json_folder_path: str):
-
-    # Navigate through each work folder in super_folder_1
-    for work_folder in os.listdir(json_folder_path):
-        work_folder_path = os.path.join(json_folder_path, work_folder)
-        process_work_folder(work_folder_path)
+    # Integrate downloading into the workflow
+    work_folder_path = json_folder_path
+    process_work_folder(work_folder_path)
 
 
 if __name__ == "__main__":

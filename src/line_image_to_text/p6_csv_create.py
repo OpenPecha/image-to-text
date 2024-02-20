@@ -19,7 +19,7 @@ def count_rows_in_csv(file_path):
     return row_count
 
 
-def process_volume(volume_path, image_output_folder, csv_output_folder, max_rows=10000):
+def process_volume(volume_path, image_output_folder, csv_output_folder):
     os.makedirs(
         os.path.dirname(csv_output_folder), exist_ok=True
     )  # Ensure directory exists
@@ -44,13 +44,7 @@ def process_volume(volume_path, image_output_folder, csv_output_folder, max_rows
 
     json_data = load_json_data(json_file_path)
 
-    batch_num = 0
-    for file in os.listdir(os.path.dirname(csv_output_folder)):
-        if file.endswith(".csv"):
-            batch_num += 1
-    batch_num = 0 if batch_num <= 1 else batch_num - 1
-
-    csv_file_path = f"{csv_output_folder}_batch_{batch_num}.csv"
+    csv_file_path = f"{csv_output_folder}-{work_folder_name}.csv"
     csv_file = open(
         csv_file_path,
         mode="a+" if os.path.exists(csv_file_path) else "w",
@@ -59,7 +53,7 @@ def process_volume(volume_path, image_output_folder, csv_output_folder, max_rows
     )
     writer = csv.writer(csv_file)
 
-    images_batch_folder = f"{image_output_folder}_batch_{batch_num}"
+    images_batch_folder = f"{image_output_folder}-{work_folder_name}"
     os.makedirs(images_batch_folder, exist_ok=True)
 
     if os.path.getsize(csv_file_path) == 0:  # If file is new, write the header
@@ -76,24 +70,6 @@ def process_volume(volume_path, image_output_folder, csv_output_folder, max_rows
             continue
 
         line_data = json_data[line_id]  # Get the data for this line
-
-        if row_count >= max_rows:  # Check if we need to start a new batch
-            csv_file.close()  # Close the current CSV file before starting a new batch
-            batch_num += 1  # Increment batch number for a new batch
-
-            csv_file_path = (
-                f"{csv_output_folder}_batch_{batch_num}.csv"  # Define new CSV file path
-            )
-            csv_file = open(
-                csv_file_path, mode="w", newline="", encoding="utf-8"
-            )  # Open new CSV file
-            writer = csv.writer(csv_file)  # Create a writer for the new CSV
-            writer.writerow(
-                ["source", "line_image_id", "repo_name", "text"]
-            )  # Write header in new CSV
-            images_batch_folder = f"{image_output_folder}_batch_{batch_num}"
-            os.makedirs(images_batch_folder, exist_ok=True)
-            row_count = 0  # Reset row count for the new CSV
 
         # Process and write current line data to CSV
         source = f"{work_folder_name}/{volume_id}/{line_id.split('_')[0]}"
@@ -128,15 +104,13 @@ def create_csv(
     csv_output_folder: str,
 ):
 
-    # Navigate through each work folder in super_folder_1
-    for work_folder in os.listdir(json_folder_path):
-        work_folder_path = os.path.join(json_folder_path, work_folder)
-        process_work_folder(work_folder_path, image_output_folder, csv_output_folder)
+    # Integrate downloading into the workflow
+    work_folder_path = json_folder_path
+    process_work_folder(work_folder_path, image_output_folder, csv_output_folder)
 
 
 if __name__ == "__main__":
     json_folder_path = "/media/gangagyatso/media files/third_problem"
-    image_folder_path = "/home/gangagyatso/Desktop/project16/data"
     image_output_folder = "/media/gangagyatso/docs/output2/images/image"
     csv_output_folder = "/media/gangagyatso/docs/output2/csv/csv"
     create_csv(json_folder_path, image_output_folder, csv_output_folder)
