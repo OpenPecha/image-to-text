@@ -100,7 +100,6 @@ def process_work_folder(work_folder_path, image_output_folder, csv_output_folder
 
 def create_csv(
     json_folder_path: str,
-    image_folder_path: str,
     image_output_folder: str,
     csv_output_folder: str,
 ):
@@ -112,9 +111,6 @@ def create_csv(
 
 if __name__ == "__main__":
     json_folder_path = "/media/gangagyatso/media files/third_problem"
-    image_folder_path = "/home/gangagyatso/Desktop/project16/data"
     image_output_folder = "/media/gangagyatso/docs/output2/images/image"
     csv_output_folder = "/media/gangagyatso/docs/output2/csv/csv"
-    create_csv(
-        json_folder_path, image_folder_path, image_output_folder, csv_output_folder
-    )
+    create_csv(json_folder_path, image_output_folder, csv_output_folder)
