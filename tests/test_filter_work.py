@@ -1,6 +1,6 @@
 from botok import WordTokenizer
 
-from line_image_to_text.p5_filter_work import (
+from line_image_to_text.filter_work import (
     is_non_bo_word_exist,
     is_non_word_exist,
     is_tibetan_num_exist,

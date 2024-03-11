@@ -1,11 +1,11 @@
 import os
 
-from line_image_to_text.p1_reorganize import process_json_files
-from line_image_to_text.p2_download_images_bdrc import download_work_images
-from line_image_to_text.p3_reorganise_image import reorganize_cropped_images
-from line_image_to_text.p4_rearrange_json import rearrange_json_text
-from line_image_to_text.p5_filter_work import filter_line_images
-from line_image_to_text.p6_csv_create import create_csv
+from line_image_to_text.create_csv import process_work_folder
+from line_image_to_text.crop_and_reorganize_image import reorganize_cropped_images
+from line_image_to_text.download_images_bdrc import download_work_images
+from line_image_to_text.filter_work import filter_line_images
+from line_image_to_text.ocr_line_image_and_rearrange_json import rearrange_json_text
+from line_image_to_text.reorganize_jsons_file import process_json_files
 
 
 def pipeline(
@@ -30,12 +30,12 @@ def pipeline(
         print(f"{json_folder_path}: rearranging text done. ")
         filter_line_images(json_folder_path)
         print(f"{json_folder_path}: filtering line images done. ")
-        create_csv(json_folder_path, image_output_folder, csv_output_folder)
+        process_work_folder(json_folder_path, image_output_folder, csv_output_folder)
         print(f"{json_folder_path}: creating csv done.")
 
 
 if __name__ == "__main__":
-    input_jsons_folder_path = "./json_input_folder"
-    image_output_folder = "./image_ouput/image"
-    csv_output_folder = "./csv_output/csv/csv"
+    input_jsons_folder_path = "../../json_input_folder"
+    image_output_folder = "../../image_ouput/image"
+    csv_output_folder = "../../csv_output/csv/csv"
     pipeline(input_jsons_folder_path, image_output_folder, csv_output_folder)

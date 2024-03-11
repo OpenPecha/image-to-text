@@ -1,5 +1,5 @@
 # from line_image_to_text.rearrange_input import load_json_data, process_work_folder
-from line_image_to_text.p4_rearrange_json import load_json_data
+from line_image_to_text.ocr_line_image_and_rearrange_json import load_json_data
 
 
 def test_process_work_folder():
