@@ -18,8 +18,8 @@ def upload_images_to_s3_bucket(image_paths, prefix):
         s3_client.upload_file(str(image_path), bucket_name, image_key)
 
 def main():
-    prefix = "line_to_text/batch22"
-    image_paths = Path(f"./data/images/batch22/")
+    prefix = "line_to_text/batch2"
+    image_paths = Path(f"./data/images/batch2/")
     upload_images_to_s3_bucket(image_paths, prefix)
 
 if __name__ == "__main__":

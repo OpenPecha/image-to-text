@@ -1,5 +1,12 @@
 from pathlib import Path
+import csv
 from config import MONLAM_AI_OCR_BUCKET, monlam_ai_ocr_s3_client
+
+
+def write_csv(data, file_path):
+    with open(file_path, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerows(data)
 
 
 def list_obj_keys(prefix, s3_client, bucket_name):
@@ -49,4 +56,13 @@ def is_archived(s3_key, s3_client, Bucket):
     except:
         return False
     return True
-  
+
+def add_row_to_csv(row, csv_path):
+    if Path(csv_path).exists():
+        with open(csv_path, mode='a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(row)
+    else:
+        with open(csv_path, mode='w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(row)

@@ -16,9 +16,13 @@ def add_to_csv(id, style_id, text, image_url):
         csv_file =  Path(f"./data/csv/Uchan.csv")
     elif style_id[0] == 1:
         csv_file =  Path(f"./data/csv/Umen.csv")
-    with open(csv_file, "a") as f:
-        f.write(f"{id},{text},{image_url}\n")
-        ids.append(id)
+    if  csv_file.exists() == False:
+        with open(csv_file, "w") as f:
+            f.write(f"{id},{text},{image_url}\n")
+    else:
+        with open(csv_file, "a") as f:
+            f.write(f"{id},{text},{image_url}\n")
+            ids.append(id)
 
 
 def parse_rechecked_jsonl(jsonl_file):
@@ -33,12 +37,6 @@ def parse_rechecked_jsonl(jsonl_file):
                 text = obj['user_input']
                 image_url = obj['image'].split("?")[0]
                 add_to_csv(id, style_id, text, image_url)
-
-
-
-
-
-
 
 
 if __name__ == "__main__":
