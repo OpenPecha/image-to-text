@@ -66,3 +66,10 @@ def add_row_to_csv(row, csv_path):
         with open(csv_path, mode='w', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(row)
+
+def upload_to_s3(file_path, s3_key, s3_client=monlam_ai_ocr_s3_client, bucket_name=MONLAM_AI_OCR_BUCKET):
+    try:
+        s3_client.upload_file(file_path, bucket_name, s3_key)
+        print(f"File uploaded successfully: {file_path}")
+    except Exception as e:
+        print(f"An error occurred during upload: {e}")
