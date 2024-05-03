@@ -2,7 +2,7 @@ import configparser
 import os
 import boto3
 
-PAGE_CROPPING_BUCKET = "image-processing.bdrc.io"
+IMAGE_PROCESSING_BUCKET = "image-processing.bdrc.io"
 BDRC_ARCHIVE_BUCKET = "archive.tbrc.org"
 OCR_OUTPUT_BUCKET = "ocr.bdrc.io"
 LAYOUT_ANALYSIS_BUCKET = "image-processing.openpecha"
@@ -13,13 +13,13 @@ config = configparser.ConfigParser()
 config.read(aws_credentials_file)
 
 
-page_cropping_session = boto3.Session(
+image_processing_session = boto3.Session(
     aws_access_key_id= config.get("image_processing_bdrc_io", "aws_access_key_id"),
     aws_secret_access_key= config.get("image_processing_bdrc_io", "aws_secret_access_key")
 )
-page_cropping_s3_client = page_cropping_session.client('s3')
-page_cropping_s3_resource = page_cropping_session.resource('s3')
-page_cropping_bucket = page_cropping_s3_resource.Bucket(PAGE_CROPPING_BUCKET)
+image_processing_s3_client = image_processing_session.client('s3')
+image_processing_s3_resource = image_processing_session.resource('s3')
+image_processing_bucket = image_processing_s3_resource.Bucket(IMAGE_PROCESSING_BUCKET)
 
 
 s3_session = boto3.Session(

@@ -23,6 +23,7 @@ def download_images(scan_id, obj_keys):
             print(f"Error: {e}")
 
 
+
 def get_images_from_s3(batch_name):
     obj_keys = list_obj_keys(prefix=f"line_to_text/{batch_name}", s3_client=s3_client, bucket_name=bucket_name)
     download_images(batch_name, obj_keys)
