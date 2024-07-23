@@ -20,22 +20,22 @@ def upload_line_images(line_dir, batch_id):
         upload_to_s3(line_path, s3_key)
 
 def create_correction_data():
-    batch_id = "Correction-3"
-    line_name = "line-3"
+    batch_id = "Correction-9"
+    line_name = "line-9"
     group_id = 1
     source_dir = Path(f"./data/Marieke/{batch_id}/")
+    xml_paths = get_xml_paths(source_dir)
     line_dir = Path(f"./data/Marieke/{line_name}/")
     csv_path = Path(f"./data/{batch_id}.csv")
-    xml_paths = get_xml_paths(source_dir)
     correction_jsonl = parse_xml_and_create_jsonl(xml_paths, line_dir, source_dir)
-    upload_line_images(line_dir, batch_id, )
+    upload_line_images(line_dir, batch_id)
     create_csv_for_correction(correction_jsonl, csv_path, batch_id, group_id)
 
 
 def create_manual_data():
     batch_id = "Manual-3"
     group_id = 2
-    image_paths = list(Path(f"./data/Marieke/{batch_id}/").iterdir())
+    image_paths = list(Path(f"./data/Marieke/{batch_id}1/").iterdir())
     csv_path = Path(f"./data/{batch_id}.csv")
     create_csv_for_manual(image_paths, csv_path, batch_id, group_id)
 

@@ -28,6 +28,26 @@ def main():
         if csv_path.stem == "batch_3":
             create_new_csv_for_pecha_tools(csv_path)
 
+def create_csv_from_transcription():
+    batch_id = "batch25"
+    output_path = Path(f"./data/{batch_id}.csv")
+    add_row_to_csv(["id", "group_id", "batch_id", "state", "inference_transcript", "url"], output_path)
+    txt_paths = list(Path("data/transcriptions/").iterdir())
+    for txt_path in txt_paths:
+        image_name = txt_path.name
+        text = txt_path.read_text(encoding='utf-8')
+        id = image_name.split(".")[0]
+        url = f"https://s3.amazonaws.com/monlam.ai.ocr/line_to_text/{batch_id}/{id}.jpg"
+        group_id = 11
+        state = "transcribing"
+        inference_transcript = text
+        new_row = [id, group_id, batch_id, state, inference_transcript, url]
+        add_row_to_csv(new_row, output_path)
+
+
 
 if __name__ == "__main__":
-    main()
+    create_csv_from_transcription()
+
+
+

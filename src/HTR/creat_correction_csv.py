@@ -1,11 +1,13 @@
 from pathlib import Path
 import xml.etree.ElementTree as ET
-from PIL import Image
+from PIL import Image, ImageDraw
 import pyewts
+import cv2
+import numpy as np
 from utils import add_row_to_csv
 
 
-def parse_xml_and_create_jsonl(xml_paths, line_dir, source_dir):
+def parse_xml_and_create_jsonl(xml_paths, line_dir, image_dir):
     final_jsonl = []
     converter = pyewts.pyewts()
     for xml_path in xml_paths:
@@ -14,21 +16,23 @@ def parse_xml_and_create_jsonl(xml_paths, line_dir, source_dir):
         namespace = {'page': 'http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15'}
         page_element = root.find('.//page:Page', namespace)
         image_filename = page_element.get('imageFilename')
-        source_image_path = source_dir / image_filename
+        source_image_path = image_dir/image_filename
         for textline in root.findall('.//page:TextLine', namespace):
             coords = textline.find('page:Coords', namespace).get('points')
+            # coords = textline.find('page:Baseline', namespace).attrib.get('points')
+            line_name = textline.attrib.get('id')
             try:
                 text = textline.find('page:TextEquiv/page:Unicode', namespace).text.strip()
                 line_text = converter.toUnicode(text)
             except:
                 line_text = ""
-            line_name = crop_line(source_image_path, coords, line_dir)
+            line_name = crop_line(source_image_path, coords, line_name, line_dir)
             image_name = line_name
             final_jsonl.append({"id": image_name, "text": line_text})
     return final_jsonl
 
 
-def crop_line(source_image_path, coords, output_path):
+def crop_line(source_image_path, coords, line_name, output_path):
     filename = (source_image_path.name).split(".")[0]
     source_image = Image.open(source_image_path)
     coords_list = [int(point) for pair in coords.split() for point in pair.split(',')]
@@ -37,7 +41,7 @@ def crop_line(source_image_path, coords, output_path):
     max_x = max(coords_list[::2])
     max_y = max(coords_list[1::2])
     line_image = source_image.crop((min_x, min_y, max_x, max_y))
-    output_filename = Path(f"{output_path}/{filename}_{min_x}_{min_y}_{max_x}_{max_y}.jpg")
+    output_filename = Path(f"{output_path}/{filename}_{line_name}.jpg")
     try:
         line_image.save(output_filename, format="JPEG")
     except:
